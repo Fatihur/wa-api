@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp API Gateway - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --success: #48bb78;
+            --danger: #f56565;
+            --warning: #ed8936;
+            --info: #4299e1;
+            --dark: #2d3748;
+            --light: #f7fafc;
+            --border: #e2e8f0;
+            --text: #2d3748;
+            --text-light: #718096;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--light);
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .version-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .github-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+        }
+
+        .github-link:hover {
+            opacity: 0.8;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: var(--header-height);
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height));
+            background: white;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e0;
+        }
+
+        .search-box {
+            padding: 0 20px 20px 20px;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+        }
+
+        .nav-section {
+            margin-bottom: 20px;
+        }
+
+        .nav-section-title {
+            padding: 8px 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-light);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text);
+            text-decoration: none;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--light);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+            border-left-color: var(--primary);
+        }
+
+        .method-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .method-badge.post {
+            background: rgba(72, 187, 120, 0.1);
+            color: var(--success);
+        }
+
+        .method-badge.get {
+            background: rgba(66, 153, 225, 0.1);
+            color: var(--info);
+        }
+
+        .method-badge.put {
+            background: rgba(237, 137, 54, 0.1);
+            color: var(--warning);
+        }
+
+        .method-badge.delete {
+            background: rgba(245, 101, 101, 0.1);
+            color: var(--danger);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        .hero {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+
+        .hero h2 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .quick-link-card {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .quick-link-card h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .quick-link-card p {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-description {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .endpoint {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--light);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .endpoint-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .endpoint-url {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .copy-btn {
+            padding: 6px 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .test-btn {
+            padding: 8px 16px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .test-btn:hover {
+            background: #38a169;
+            transform: translateY(-1px);
+        }
+
+        .endpoint-description {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .params-section {
+            margin-bottom: 20px;
+        }
+
+        .params-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+
+        .param-item {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: grid;
+            grid-template-columns: 150px 100px 1fr;
+            gap: 15px;
+            align-items: start;
+            font-size: 14px;
+        }
+
+        .param-name {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .param-type {
+            color: var(--warning);
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .param-desc {
+            color: var(--text-light);
+        }
+
+        .required-badge {
+            background: var(--danger);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #333;
+        }
+
+        .code-lang {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .alert-info {
+            background: rgba(66, 153, 225, 0.1);
+            color: #2c5282;
+            border-left: 4px solid var(--info);
+        }
+
+        .alert-warning {
+            background: rgba(237, 137, 54, 0.1);
+            color: #7c2d12;
+            border-left: 4px solid var(--warning);
+        }
+
+        .alert-success {
+            background: rgba(72, 187, 120, 0.1);
+            color: #22543d;
+            border-left: 4px solid var(--success);
+        }
+
+        .test-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px solid var(--border);
+        }
+
+        .test-panel h4 {
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .response-panel {
+            margin-top: 20px;
+            padding: 20px;
+            background: #1e1e1e;
+            border-radius: 8px;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .response-panel pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .param-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .endpoint-url {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📱 WhatsApp API Gateway</h1>
+        <div class="header-right">
+            <span class="version-badge">v1.0.0</span>
+            <a href="README.md" class="github-link">
+                📖 Documentation
+            </a>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search endpoints...">
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Getting Started</div>
+            <a href="#introduction" class="nav-item" onclick="showSection('introduction')">
+                <span>🚀</span> Introduction
+            </a>
+            <a href="#authentication" class="nav-item" onclick="showSection('authentication')">
+                <span>🔐</span> Authentication
+            </a>
+            <a href="#quick-start" class="nav-item" onclick="showSection('quick-start')">
+                <span>⚡</span> Quick Start
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Session Management</div>
+            <a href="#create-session" class="nav-item" onclick="showSection('create-session')">
+                <span class="method-badge post">POST</span> Create Session
+            </a>
+            <a href="#get-qr" class="nav-item" onclick="showSection('get-qr')">
+                <span class="method-badge get">GET</span> Get QR Code
+            </a>
+            <a href="#session-status" class="nav-item" onclick="showSection('session-status')">
+                <span class="method-badge get">GET</span> Session Status
+            </a>
+            <a href="#list-sessions" class="nav-item" onclick="showSection('list-sessions')">
+                <span class="method-badge get">GET</span> List Sessions
+            </a>
+            <a href="#delete-session" class="nav-item" onclick="showSection('delete-session')">
+                <span class="method-badge delete">DEL</span> Delete Session
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Messaging</div>
+            <a href="#send-text" class="nav-item" onclick="showSection('send-text')">
+                <span class="method-badge post">POST</span> Send Text
+            </a>
+            <a href="#send-image" class="nav-item" onclick="showSection('send-image')">
+                <span class="method-badge post">POST</span> Send Image
+            </a>
+            <a href="#send-video" class="nav-item" onclick="showSection('send-video')">
+                <span class="method-badge post">POST</span> Send Video
+            </a>
+            <a href="#send-audio" class="nav-item" onclick="showSection('send-audio')">
+                <span class="method-badge post">POST</span> Send Audio
+            </a>
+            <a href="#send-document" class="nav-item" onclick="showSection('send-document')">
+                <span class="method-badge post">POST</span> Send Document
+            </a>
+            <a href="#send-location" class="nav-item" onclick="showSection('send-location')">
+                <span class="method-badge post">POST</span> Send Location
+            </a>
+            <a href="#send-contact" class="nav-item" onclick="showSection('send-contact')">
+                <span class="method-badge post">POST</span> Send Contact
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Group Management</div>
+            <a href="#create-group" class="nav-item" onclick="showSection('create-group')">
+                <span class="method-badge post">POST</span> Create Group
+            </a>
+            <a href="#group-metadata" class="nav-item" onclick="showSection('group-metadata')">
+                <span class="method-badge get">GET</span> Group Metadata
+            </a>
+            <a href="#add-participants" class="nav-item" onclick="showSection('add-participants')">
+                <span class="method-badge post">POST</span> Add Participants
+            </a>
+            <a href="#promote-admin" class="nav-item" onclick="showSection('promote-admin')">
+                <span class="method-badge post">POST</span> Promote Admin
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Profile & Contacts</div>
+            <a href="#get-profile" class="nav-item" onclick="showSection('get-profile')">
+                <span class="method-badge get">GET</span> Get Profile
+            </a>
+            <a href="#update-profile" class="nav-item" onclick="showSection('update-profile')">
+                <span class="method-badge put">PUT</span> Update Profile
+            </a>
+            <a href="#check-number" class="nav-item" onclick="showSection('check-number')">
+                <span class="method-badge post">POST</span> Check Number
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- Introduction -->
+        <section id="introduction" class="section">
+            <div class="hero">
+                <h2>Welcome to WhatsApp API Gateway</h2>
+                <p>REST API untuk integrasi WhatsApp menggunakan Baileys dengan dukungan multi-client dan fitur lengkap.</p>
+                
+                <div class="quick-links">
+                    <a href="#quick-start" class="quick-link-card" onclick="showSection('quick-start')">
+                        <h4>⚡ Quick Start</h4>
+                        <p>Mulai dalam 5 menit</p>
+                    </a>
+                    <a href="#authentication" class="quick-link-card" onclick="showSection('authentication')">
+                        <h4>🔐 Authentication</h4>
+                        <p>Setup API key</p>
+                    </a>
+                    <a href="test-qr.html" class="quick-link-card" target="_blank">
+                        <h4>🧪 Test QR</h4>
+                        <p>Test dengan UI</p>
+                    </a>
+                    <a href="EXAMPLES.md" class="quick-link-card" target="_blank">
+                        <h4>📚 Examples</h4>
+                        <p>Lihat contoh lengkap</p>
+                    </a>
+                </div>
+            </div>
+
+            <h3 class="section-title">✨ Features</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h4>Multi-Session</h4>
+                    <p>Support unlimited concurrent WhatsApp connections untuk multiple clients</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h4>Full Messaging</h4>
+                    <p>Text, media, location, contacts, reactions, buttons, lists, dan lebih</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👨‍👩‍👧‍👦</div>
+                    <h4>Group Management</h4>
+                    <p>Create, update, manage members, admins, dan invite links</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h4>Webhook Events</h4>
+                    <p>Real-time notifications untuk messages, status, dan events</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h4>Secure & Fast</h4>
+                    <p>API key authentication, rate limiting, dan production ready</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h4>47+ Endpoints</h4>
+                    <p>Complete REST API covering ALL Baileys features</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Authentication -->
+        <section id="authentication" class="section hidden">
+            <h2 class="section-title">🔐 API Access</h2>
+            <p class="section-description">Semua API endpoints dapat diakses secara langsung tanpa memerlukan authentication.</p>
+
+            <div class="alert alert-info">
+                <span>ℹ️</span>
+                <div>
+                    <strong>Public API:</strong> Endpoints dapat diakses langsung menggunakan base URL tanpa API key.
+                </div>
+            </div>
+
+            <h3>Example Request</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>curl http://localhost:3000/api/session</pre>
+            </div>
+
+            <div class="alert alert-warning">
+                <span>⚠️</span>
+                <div>
+                    <strong>Production Security:</strong><br>
+                    Untuk production, disarankan menggunakan:<br>
+                    • HTTPS dengan SSL/TLS<br>
+                    • Reverse proxy (Nginx/Apache) dengan authentication<br>
+                    • IP whitelist atau firewall rules<br>
+                    • VPN atau network isolation
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Start -->
+        <section id="quick-start" class="section hidden">
+            <h2 class="section-title">⚡ Quick Start</h2>
+            <p class="section-description">Setup dan mulai menggunakan API dalam 5 menit.</p>
+
+            <h3>1. Start Server</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>npm start</pre>
+            </div>
+
+            <h3>2. Create Session</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>curl -X POST http://localhost:3000/api/session/create \
+  -H "Content-Type: application/json" \
+  -d '{"sessionId": "test1"}'</pre>
+            </div>
+
+            <h3>3. Get QR Code</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>curl http://localhost:3000/api/session/test1/qr</pre>
+            </div>
+
+            <h3>4. Scan QR Code</h3>
+            <div class="alert alert-info">
+                <span>📱</span>
+                <div>
+                    <strong>Cara scan:</strong><br>
+                    1. Buka WhatsApp di HP<br>
+                    2. Menu > Linked Devices<br>
+                    3. Link a Device<br>
+                    4. Scan QR yang muncul dari response API
+                </div>
+            </div>
+
+            <h3>5. Send Message</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">bash</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre>curl -X POST http://localhost:3000/api/message/test1/send/text \
+  -H "Content-Type: application/json" \
+  -d '{"jid": "6281234567890@s.whatsapp.net", "text": "Hello!"}'</pre>
+            </div>
+
+            <div class="alert alert-success">
+                <span>✅</span>
+                <div>
+                    <strong>Success!</strong> Anda sudah berhasil mengirim pesan WhatsApp via API.
+                </div>
+            </div>
+        </section>
+
+        <!-- Create Session -->
+        <section id="create-session" class="section hidden">
+            <h2 class="section-title">Create Session</h2>
+            <p class="section-description">Membuat session baru untuk koneksi WhatsApp.</p>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method-badge post">POST</span>
+                    <h3 class="endpoint-title">Create Session</h3>
+                </div>
+
+                <div class="endpoint-url">
+                    <span>/api/session/create</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+
+                <p class="endpoint-description">
+                    Endpoint ini membuat session WhatsApp baru. Setelah session dibuat, Anda perlu mendapatkan QR code dan scan dengan WhatsApp di HP.
+                </p>
+
+                <div class="params-section">
+                    <h4 class="params-title">Request Body</h4>
+                    <div class="param-item">
+                        <span class="param-name">sessionId<span class="required-badge">REQUIRED</span></span>
+                        <span class="param-type">string</span>
+                        <span class="param-desc">Unique identifier untuk session (contoh: "client1", "user123")</span>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-name">webhookUrl</span>
+                        <span class="param-type">string</span>
+                        <span class="param-desc">URL untuk menerima webhook events (optional)</span>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab(event, 'create-session-curl')">cURL</button>
+                    <button class="tab" onclick="switchTab(event, 'create-session-js')">JavaScript</button>
+                    <button class="tab" onclick="switchTab(event, 'create-session-response')">Response</button>
+                </div>
+
+                <div id="create-session-curl" class="tab-content active">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">bash</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>curl -X POST http://localhost:3000/api/session/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sessionId": "mysession1",
+    "webhookUrl": "https://your-app.com/webhook"
+  }'</pre>
+                    </div>
+                </div>
+
+                <div id="create-session-js" class="tab-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">javascript</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>const response = await fetch('http://localhost:3000/api/session/create', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    sessionId: 'mysession1',
+    webhookUrl: 'https://your-app.com/webhook'
+  })
+});
+
+const data = await response.json();
+console.log(data);</pre>
+                    </div>
+                </div>
+
+                <div id="create-session-response" class="tab-content">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "success": true,
+  "message": "Session created. Scan QR code to connect",
+  "data": {
+    "sessionId": "mysession1"
+  }
+}</pre>
+                    </div>
+                </div>
+
+                <button class="test-btn" onclick="toggleTestPanel('create-session-test')">
+                    🧪 Test Endpoint
+                </button>
+
+                <div id="create-session-test" class="test-panel hidden">
+                    <h4>Test Create Session</h4>
+                    <div class="form-group">
+                        <label>API URL</label>
+                        <input type="text" id="test-api-url" value="http://localhost:3000" placeholder="http://localhost:3000">
+                    </div>
+                    <div class="form-group">
+                        <label>Session ID</label>
+                        <input type="text" id="test-session-id" value="test-session" placeholder="test-session">
+                    </div>
+                    <div class="form-group">
+                        <label>Webhook URL (optional)</label>
+                        <input type="text" id="test-webhook-url" placeholder="https://your-app.com/webhook">
+                    </div>
+                    <button class="test-btn" onclick="testCreateSession()">
+                        Send Request
+                    </button>
+                    <div id="test-response" class="response-panel hidden">
+                        <pre></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Get QR Code -->
+        <section id="get-qr" class="section hidden">
+            <h2 class="section-title">Get QR Code</h2>
+            <p class="section-description">Mendapatkan QR code untuk di-scan dengan WhatsApp.</p>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method-badge get">GET</span>
+                    <h3 class="endpoint-title">Get QR Code</h3>
+                </div>
+
+                <div class="endpoint-url">
+                    <span>/api/session/:sessionId/qr</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+
+                <p class="endpoint-description">
+                    Mendapatkan QR code dalam format Data URL (base64) yang bisa langsung ditampilkan di browser.
+                </p>
+
+                <div class="params-section">
+                    <h4 class="params-title">Path Parameters</h4>
+                    <div class="param-item">
+                        <span class="param-name">sessionId<span class="required-badge">REQUIRED</span></span>
+                        <span class="param-type">string</span>
+                        <span class="param-desc">Session ID yang sudah dibuat</span>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>curl http://localhost:3000/api/session/mysession1/qr</pre>
+                </div>
+
+                <h4>Response Example:</h4>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">json</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  "success": true,
+  "message": "QR code retrieved",
+  "data": {
+    "qr": "data:image/png;base64,iVBORw0KGg..."
+  }
+}</pre>
+                </div>
+
+                <div class="alert alert-info">
+                    <span>💡</span>
+                    <div>
+                        <strong>Tip:</strong> Gunakan QR data URL di HTML: <code>&lt;img src="data:image/png;base64,..." /&gt;</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Send Text -->
+        <section id="send-text" class="section hidden">
+            <h2 class="section-title">Send Text Message</h2>
+            <p class="section-description">Mengirim pesan text ke nomor WhatsApp.</p>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method-badge post">POST</span>
+                    <h3 class="endpoint-title">Send Text Message</h3>
+                </div>
+
+                <div class="endpoint-url">
+                    <span>/api/message/:sessionId/send/text</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+
+                <div class="params-section">
+                    <h4 class="params-title">Path Parameters</h4>
+                    <div class="param-item">
+                        <span class="param-name">sessionId<span class="required-badge">REQUIRED</span></span>
+                        <span class="param-type">string</span>
+                        <span class="param-desc">Session ID yang sudah connected</span>
+                    </div>
+                </div>
+
+                <div class="params-section">
+                    <h4 class="params-title">Request Body</h4>
+                    <div class="param-item">
+                        <span class="param-name">jid<span class="required-badge">REQUIRED</span></span>
+                        <span class="param-type">string</span>
+                        <span class="param-desc">WhatsApp JID (contoh: 6281234567890@s.whatsapp.net)</span>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-name">text<span class="required-badge">REQUIRED</span></span>
+                        <span class="param-type">string</span>
+                        <span class="param-desc">Teks pesan yang akan dikirim</span>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">bash</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>curl -X POST http://localhost:3000/api/message/mysession1/send/text \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jid": "6281234567890@s.whatsapp.net",
+    "text": "Hello from API!"
+  }'</pre>
+                </div>
+
+                <div class="alert alert-warning">
+                    <span>⚠️</span>
+                    <div>
+                        <strong>Format JID:</strong> Gunakan format <code>[country_code][number]@s.whatsapp.net</code><br>
+                        Contoh: <code>6281234567890@s.whatsapp.net</code> (tanpa + atau -)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- More sections will be added similarly -->
+
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Show section
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show selected section
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.remove('hidden');
+                
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                const navItem = document.querySelector(`[href="#${sectionId}"]`);
+                if (navItem) {
+                    navItem.classList.add('active');
+                }
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Tab switching
+        function switchTab(event, tabId) {
+            const parentEndpoint = event.target.closest('.endpoint, .section');
+            if (!parentEndpoint) return;
+
+            // Hide all tab contents in this endpoint
+            parentEndpoint.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active from all tabs in this endpoint
+            parentEndpoint.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab content
+            const tabContent = document.getElementById(tabId);
+            if (tabContent) {
+                tabContent.classList.add('active');
+            }
+
+            // Add active to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Copy code
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('pre').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'var(--success)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'var(--primary)';
+                }, 2000);
+            });
+        }
+
+        // Toggle test panel
+        function toggleTestPanel(panelId) {
+            const panel = document.getElementById(panelId);
+            if (panel) {
+                panel.classList.toggle('hidden');
+            }
+        }
+
+        // Test create session
+        async function testCreateSession() {
+            const apiUrl = document.getElementById('test-api-url').value;
+            const sessionId = document.getElementById('test-session-id').value;
+            const webhookUrl = document.getElementById('test-webhook-url').value;
+
+            const responsePanel = document.getElementById('test-response');
+            const responsePre = responsePanel.querySelector('pre');
+
+            try {
+                responsePre.textContent = 'Loading...';
+                responsePanel.classList.remove('hidden');
+
+                const response = await fetch(`${apiUrl}/api/session/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sessionId,
+                        webhookUrl: webhookUrl || null
+                    })
+                });
+
+                const data = await response.json();
+                responsePre.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responsePre.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        // Initialize - show introduction by default
+        showSection('introduction');
+    </script>
+</body>
+</html>

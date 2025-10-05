@@ -1,0 +1,1059 @@
+{
+	"info": {
+		"_postman_id": "wa-api-collection",
+		"name": "WhatsApp API Gateway",
+		"description": "Complete API collection for WhatsApp API Gateway using Baileys.\n\nFeatures:\n- Multi-session support\n- Full messaging (text, media, location, contacts, etc)\n- Group management\n- Profile & contacts management\n- Webhook support\n\nNote: API endpoints are publicly accessible (no API key required)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Session Management",
+			"item": [
+				{
+					"name": "Create Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sessionId\": \"{{session_id}}\",\n    \"webhookUrl\": \"{{webhook_url}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/session/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session", "create"]
+						},
+						"description": "Create a new WhatsApp session. After creation, get QR code and scan with WhatsApp."
+					}
+				},
+				{
+					"name": "Get All Sessions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/session",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session"]
+						},
+						"description": "Get list of all active sessions"
+					}
+				},
+				{
+					"name": "Get QR Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/session/{{session_id}}/qr",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session", "{{session_id}}", "qr"]
+						},
+						"description": "Get QR code for session in Data URL format (base64)"
+					}
+				},
+				{
+					"name": "Get Session Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/session/{{session_id}}/status",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session", "{{session_id}}", "status"]
+						},
+						"description": "Check if session is connected and get connection info"
+					}
+				},
+				{
+					"name": "Delete Session",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/session/{{session_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "session", "{{session_id}}"]
+						},
+						"description": "Delete and logout session"
+					}
+				}
+			],
+			"description": "Endpoints for managing WhatsApp sessions"
+		},
+		{
+			"name": "Messaging",
+			"item": [
+				{
+					"name": "Send Text Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\",\n    \"text\": \"Hello from WhatsApp API!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/text",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "text"]
+						},
+						"description": "Send text message to a contact or group"
+					}
+				},
+				{
+					"name": "Send Image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "jid",
+									"value": "{{test_phone}}",
+									"type": "text"
+								},
+								{
+									"key": "caption",
+									"value": "Check this image!",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/image",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "image"]
+						},
+						"description": "Send image with optional caption"
+					}
+				},
+				{
+					"name": "Send Video",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "video",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "jid",
+									"value": "{{test_phone}}",
+									"type": "text"
+								},
+								{
+									"key": "caption",
+									"value": "Check this video!",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/video",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "video"]
+						},
+						"description": "Send video with optional caption"
+					}
+				},
+				{
+					"name": "Send Audio",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "audio",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "jid",
+									"value": "{{test_phone}}",
+									"type": "text"
+								},
+								{
+									"key": "ptt",
+									"value": "true",
+									"type": "text",
+									"description": "Set to true for voice note"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/audio",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "audio"]
+						},
+						"description": "Send audio file or voice note"
+					}
+				},
+				{
+					"name": "Send Document",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "document",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "jid",
+									"value": "{{test_phone}}",
+									"type": "text"
+								},
+								{
+									"key": "filename",
+									"value": "document.pdf",
+									"type": "text"
+								},
+								{
+									"key": "mimetype",
+									"value": "application/pdf",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/document",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "document"]
+						},
+						"description": "Send document file"
+					}
+				},
+				{
+					"name": "Send Sticker",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "sticker",
+									"type": "file",
+									"src": [],
+									"description": "Image file to convert to sticker"
+								},
+								{
+									"key": "jid",
+									"value": "{{test_phone}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/sticker",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "sticker"]
+						},
+						"description": "Send sticker (image will be converted)"
+					}
+				},
+				{
+					"name": "Send Location",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\",\n    \"latitude\": -6.2088,\n    \"longitude\": 106.8456,\n    \"name\": \"Jakarta, Indonesia\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/location",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "location"]
+						},
+						"description": "Send location coordinates"
+					}
+				},
+				{
+					"name": "Send Contact",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\",\n    \"contacts\": [\n        {\n            \"displayName\": \"John Doe\",\n            \"vcard\": \"BEGIN:VCARD\\nVERSION:3.0\\nFN:John Doe\\nTEL;type=CELL;type=VOICE;waid=6281234567890:+62 812-3456-7890\\nEND:VCARD\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/contact",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "contact"]
+						},
+						"description": "Send contact card(s)"
+					}
+				},
+				{
+					"name": "Send Reaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\",\n    \"messageId\": \"MESSAGE_ID_HERE\",\n    \"emoji\": \"❤️\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/reaction",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "reaction"]
+						},
+						"description": "React to a message with emoji"
+					}
+				},
+				{
+					"name": "Send Buttons",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\",\n    \"text\": \"Choose an option:\",\n    \"buttons\": [\n        {\"buttonId\": \"btn1\", \"buttonText\": {\"displayText\": \"Option 1\"}},\n        {\"buttonId\": \"btn2\", \"buttonText\": {\"displayText\": \"Option 2\"}},\n        {\"buttonId\": \"btn3\", \"buttonText\": {\"displayText\": \"Option 3\"}}\n    ],\n    \"footer\": \"Select one\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/buttons",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "buttons"]
+						},
+						"description": "Send message with buttons"
+					}
+				},
+				{
+					"name": "Send List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\",\n    \"text\": \"Select from menu:\",\n    \"buttonText\": \"View Menu\",\n    \"sections\": [\n        {\n            \"title\": \"Section 1\",\n            \"rows\": [\n                {\"title\": \"Option 1\", \"description\": \"Description 1\", \"rowId\": \"opt1\"},\n                {\"title\": \"Option 2\", \"description\": \"Description 2\", \"rowId\": \"opt2\"}\n            ]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/send/list",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "send", "list"]
+						},
+						"description": "Send message with list menu"
+					}
+				},
+				{
+					"name": "Forward Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\",\n    \"messageId\": \"MESSAGE_ID_HERE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/forward",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "forward"]
+						},
+						"description": "Forward a message to another contact"
+					}
+				},
+				{
+					"name": "Delete Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\",\n    \"messageId\": \"MESSAGE_ID_HERE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/delete",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "delete"]
+						},
+						"description": "Delete a message for everyone"
+					}
+				},
+				{
+					"name": "Mark as Read",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\",\n    \"messageId\": \"MESSAGE_ID_HERE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/read",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "read"]
+						},
+						"description": "Mark message as read"
+					}
+				},
+				{
+					"name": "Send Presence Update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\",\n    \"type\": \"composing\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/presence",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "presence"]
+						},
+						"description": "Send presence update (typing, recording, online, offline, etc)"
+					}
+				},
+				{
+					"name": "Download Media",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"message\": {}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/message/{{session_id}}/download",
+							"host": ["{{base_url}}"],
+							"path": ["api", "message", "{{session_id}}", "download"]
+						},
+						"description": "Download media from a message"
+					}
+				}
+			],
+			"description": "Endpoints for sending messages and media"
+		},
+		{
+			"name": "Group Management",
+			"item": [
+				{
+					"name": "Create Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"My Test Group\",\n    \"participants\": [\n        \"6281234567890@s.whatsapp.net\",\n        \"6289876543210@s.whatsapp.net\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "create"]
+						},
+						"description": "Create a new WhatsApp group"
+					}
+				},
+				{
+					"name": "Get Group Metadata",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/{{test_group_jid}}/metadata",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "{{test_group_jid}}", "metadata"]
+						},
+						"description": "Get group information (name, participants, admins, etc)"
+					}
+				},
+				{
+					"name": "Update Group Name",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_group_jid}}\",\n    \"name\": \"New Group Name\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/name",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "name"]
+						},
+						"description": "Update group name"
+					}
+				},
+				{
+					"name": "Update Group Description",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_group_jid}}\",\n    \"description\": \"New group description\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/description",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "description"]
+						},
+						"description": "Update group description"
+					}
+				},
+				{
+					"name": "Update Group Picture",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "jid",
+									"value": "{{test_group_jid}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/picture",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "picture"]
+						},
+						"description": "Update group profile picture"
+					}
+				},
+				{
+					"name": "Add Participants",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_group_jid}}\",\n    \"participants\": [\n        \"6281234567890@s.whatsapp.net\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/participants/add",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "participants", "add"]
+						},
+						"description": "Add participants to group"
+					}
+				},
+				{
+					"name": "Remove Participants",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_group_jid}}\",\n    \"participants\": [\n        \"6281234567890@s.whatsapp.net\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/participants/remove",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "participants", "remove"]
+						},
+						"description": "Remove participants from group"
+					}
+				},
+				{
+					"name": "Promote Participants to Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_group_jid}}\",\n    \"participants\": [\n        \"6281234567890@s.whatsapp.net\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/participants/promote",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "participants", "promote"]
+						},
+						"description": "Promote participants to admin"
+					}
+				},
+				{
+					"name": "Demote Participants from Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_group_jid}}\",\n    \"participants\": [\n        \"6281234567890@s.whatsapp.net\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/participants/demote",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "participants", "demote"]
+						},
+						"description": "Demote admin to regular participant"
+					}
+				},
+				{
+					"name": "Leave Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_group_jid}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/leave",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "leave"]
+						},
+						"description": "Leave a group"
+					}
+				},
+				{
+					"name": "Get Invite Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/{{test_group_jid}}/invite-code",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "{{test_group_jid}}", "invite-code"]
+						},
+						"description": "Get group invite link code"
+					}
+				},
+				{
+					"name": "Revoke Invite Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_group_jid}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/invite-code/revoke",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "invite-code", "revoke"]
+						},
+						"description": "Revoke current invite link and generate new one"
+					}
+				},
+				{
+					"name": "Join Group via Invite",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"inviteCode\": \"INVITE_CODE_HERE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/join",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "join"]
+						},
+						"description": "Join group using invite code"
+					}
+				},
+				{
+					"name": "Toggle Group Settings",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_group_jid}}\",\n    \"setting\": \"announcement\",\n    \"value\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/settings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "settings"]
+						},
+						"description": "Update group settings (announcement mode, locked/unlocked)"
+					}
+				},
+				{
+					"name": "Get Group Info from Invite Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/group/{{session_id}}/invite/INVITE_CODE_HERE",
+							"host": ["{{base_url}}"],
+							"path": ["api", "group", "{{session_id}}", "invite", "INVITE_CODE_HERE"]
+						},
+						"description": "Get group information from invite code without joining"
+					}
+				}
+			],
+			"description": "Endpoints for group management"
+		},
+		{
+			"name": "Profile & Contacts",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "profile"]
+						},
+						"description": "Get own profile information"
+					}
+				},
+				{
+					"name": "Update Profile Name",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"My New Name\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/profile/name",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "profile", "name"]
+						},
+						"description": "Update profile name"
+					}
+				},
+				{
+					"name": "Update Profile Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"My new status message\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/profile/status",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "profile", "status"]
+						},
+						"description": "Update profile status/about"
+					}
+				},
+				{
+					"name": "Update Profile Picture",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/profile/picture",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "profile", "picture"]
+						},
+						"description": "Update profile picture"
+					}
+				},
+				{
+					"name": "Remove Profile Picture",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/profile/picture",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "profile", "picture"]
+						},
+						"description": "Remove profile picture"
+					}
+				},
+				{
+					"name": "Block Contact",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/contacts/block",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "contacts", "block"]
+						},
+						"description": "Block a contact"
+					}
+				},
+				{
+					"name": "Unblock Contact",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jid\": \"{{test_phone}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/contacts/unblock",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "contacts", "unblock"]
+						},
+						"description": "Unblock a contact"
+					}
+				},
+				{
+					"name": "Get Blocked Contacts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/contacts/blocked",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "contacts", "blocked"]
+						},
+						"description": "Get list of blocked contacts"
+					}
+				},
+				{
+					"name": "Get Contacts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/contacts",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "contacts"]
+						},
+						"description": "Get all contacts"
+					}
+				},
+				{
+					"name": "Get Chats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/chats",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "chats"]
+						},
+						"description": "Get all chats"
+					}
+				},
+				{
+					"name": "Check Number Status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"numbers\": [\n        \"6281234567890\",\n        \"6289876543210\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/check-number",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "check-number"]
+						},
+						"description": "Check if numbers are registered on WhatsApp"
+					}
+				},
+				{
+					"name": "Update Privacy Settings",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"setting\": \"readreceipts\",\n    \"value\": \"all\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/privacy",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "privacy"]
+						},
+						"description": "Update privacy settings"
+					}
+				},
+				{
+					"name": "Get Privacy Settings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/profile/{{session_id}}/privacy",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile", "{{session_id}}", "privacy"]
+						},
+						"description": "Get current privacy settings"
+					}
+				}
+			],
+			"description": "Endpoints for profile and contact management"
+		}
+	]
+}
