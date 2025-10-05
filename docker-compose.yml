@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  wa-api:
+    build: .
+    container_name: wa-api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - HOST=0.0.0.0
+      - SESSION_STORAGE_PATH=/app/sessions
+      - RATE_LIMIT_WINDOW_MS=60000
+      - RATE_LIMIT_MAX_REQUESTS=100
+    volumes:
+      - ./sessions:/app/sessions
+      - ./uploads:/app/uploads
+    restart: unless-stopped

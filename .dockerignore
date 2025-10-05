@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+.env
+.git
+.gitignore
+*.md
+docs.html
+firebase-debug.log
+sessions/*
+uploads/*
+postman_collection.json
+postman_environment.json
